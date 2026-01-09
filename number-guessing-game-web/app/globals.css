@@ -1,0 +1,77 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --terminal-green: #00ff00;
+  --terminal-green-dim: #00aa00;
+  --terminal-green-bright: #66ff66;
+  --terminal-bg: #000000;
+  --terminal-bg-light: #0a0a0a;
+  --terminal-border: #00ff00;
+}
+
+body {
+  background: #000000;
+  color: #00ff00;
+  font-family: 'Space Mono', 'Courier New', monospace;
+  text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .terminal-border {
+    border: 2px solid var(--terminal-border);
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+  }
+  
+  .terminal-glow {
+    text-shadow: 0 0 10px rgba(0, 255, 0, 0.8);
+  }
+  
+  .terminal-scan {
+    position: relative;
+  }
+  
+  .terminal-scan::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(0, 255, 0, 0.05) 50%,
+      transparent 100%
+    );
+    pointer-events: none;
+    animation: scan 8s linear infinite;
+  }
+  
+  @keyframes scan {
+    0% {
+      transform: translateY(-100%);
+    }
+    100% {
+      transform: translateY(100%);
+    }
+  }
+  
+  .terminal-flicker {
+    animation: flicker 0.15s infinite;
+  }
+  
+  @keyframes flicker {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.95;
+    }
+  }
+}

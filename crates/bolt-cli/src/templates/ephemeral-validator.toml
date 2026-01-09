@@ -1,0 +1,11 @@
+[accounts]
+remote.url = "http://localhost:8899"
+lifecycle = "ephemeral"
+commit = { frequency-millis = 50_000 }
+
+[rpc]
+addr = "0.0.0.0"
+port = 7799
+
+[validator]
+millis-per-slot = 50

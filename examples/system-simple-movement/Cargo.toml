@@ -1,0 +1,29 @@
+[package]
+name = "system-simple-movement"
+description = "Created with Bolt"
+version = { workspace = true }
+authors = { workspace = true }
+repository = { workspace = true }
+homepage = { workspace = true }
+license = { workspace = true }
+edition = { workspace = true }
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "system_simple_movement"
+
+[features]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+cpi = ["no-entrypoint"]
+default = []
+idl-build = ["bolt-lang/idl-build"]
+anchor-debug = ["bolt-lang/anchor-debug"]
+custom-heap = []
+custom-panic = []
+
+[dependencies]
+serde.workspace = true
+bolt-lang.workspace = true
+bolt-types = { version = "0.2.6", path = "../../crates/types" }

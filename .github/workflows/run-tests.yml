@@ -1,0 +1,106 @@
+name: Run Bolt Tests
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+env:
+  solana_version: v2.2.20
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 21
+
+      - name: Install Essentials
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pkg-config build-essential libudev-dev
+          npm install --global yarn
+
+      - name: Cache Node Dependencies
+        uses: actions/cache@v3
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+
+      - name: Cache Rust
+        uses: Swatinem/rust-cache@v2
+
+      - name: Install Solana
+        run: |
+          sh -c "$(curl -sSfL https://release.anza.xyz/${{ env.solana_version }}/install)"
+          export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
+          echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
+          solana --version
+
+  test:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+
+      - name: Cache Rust
+        uses: Swatinem/rust-cache@v2
+
+      - name: Install Solana
+        run: |
+          sh -c "$(curl -sSfL https://release.anza.xyz/${{ env.solana_version }}/install)"
+          export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
+          echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
+          solana --version
+
+      - name: Install Ephemeral Validator
+        run: |
+          npm install --global @magicblock-labs/ephemeral-validator
+
+      - name: Create keypair
+        run: |
+          export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
+          solana --version
+          solana-keygen new --silent --no-bip39-passphrase
+
+      - name: Set Deployment Keys
+        run: |
+          mkdir -p target/deploy
+          echo ${{ secrets.WORLD }} > target/deploy/world-keypair.json
+          echo ${{ secrets.BOLT_COMPONENT }} > target/deploy/bolt_component-keypair.json
+          echo ${{ secrets.BOLT_SYSTEM }} > target/deploy/bolt_system-keypair.json
+          echo ${{ secrets.COMPONENT_POSITION }} > target/deploy/component_position-keypair.json
+          echo ${{ secrets.COMPONENT_VELOCITY }} > target/deploy/component_velocity-keypair.json
+          echo ${{ secrets.SYSTEM_APPLY_VELOCITY }} > target/deploy/system_apply_velocity-keypair.json
+          echo ${{ secrets.SYSTEM_FLY }} > target/deploy/system_fly-keypair.json
+          echo ${{ secrets.SYSTEM_SIMPLE_MOVEMENT }} > target/deploy/system_simple_movement-keypair.json
+
+      - name: Run Build and Tests
+        run: |
+          cargo install --path crates/bolt-cli --force --locked
+          yarn install
+          bolt build
+          cd clients/typescript
+          yarn install && yarn build
+          cd ../..
+          # Set limits for being able to run ephemeral-validator test process
+          sudo prlimit --pid $$ --nofile=1048576:1048576
+          sudo sysctl fs.inotify.max_user_instances=1280
+          sudo sysctl fs.inotify.max_user_watches=655360
+          bolt test
+

@@ -1,0 +1,22 @@
+[package]
+name = "system-select-number"
+version = "0.2.6"
+description = "Created with Bolt"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "system_select_number"
+
+[features]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+cpi = ["no-entrypoint"]
+default = []
+idl-build = ["anchor-lang/idl-build"]
+
+[dependencies]
+bolt-lang = { workspace = true }
+game-session = { path = "../component-game-session", features = ["cpi"] }
+player-state = { path = "../component-player-state", features = ["cpi"] }

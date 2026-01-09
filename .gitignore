@@ -1,0 +1,27 @@
+.vscode
+.idea*
+.idea
+.anchor
+*.DS_Store
+target
+**/*.rs.bk
+node_modules
+clients/typescript/node_modules
+clients/typescript/yarn-error.log
+.yarn
+**/test-ledger
+**/test-ledger-magicblock
+
+# Examples
+tests/examples/.anchor
+tests/examples/target
+tests/examples/node_modules
+tests/examples/.yarn
+
+cli/npm-package/lib
+cli/npm-package/.npmrc
+cli/npm-package/.yarnrc
+cli/npm-package/package-lock.json
+.npmrc
+.yarnrc
+

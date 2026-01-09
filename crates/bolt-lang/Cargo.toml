@@ -1,0 +1,50 @@
+[package]
+name = "bolt-lang"
+description = "Bolt Language"
+version = { workspace = true }
+authors = { workspace = true }
+repository = { workspace = true }
+homepage = { workspace = true }
+license = { workspace = true }
+edition = { workspace = true }
+
+[features]
+anchor-debug = ["anchor-lang/anchor-debug"]
+idl-build = ["anchor-lang/idl-build"]
+
+[dependencies]
+anchor-lang = { workspace = true }
+
+# Bolt Attributes
+bolt-attribute-bolt-program = { workspace = true }
+bolt-attribute-bolt-delegate = { workspace = true }
+bolt-attribute-bolt-component = { workspace = true }
+bolt-attribute-bolt-system = { workspace = true }
+bolt-attribute-bolt-system-input = { workspace = true }
+bolt-attribute-bolt-component-deserialize = { workspace = true }
+bolt-attribute-bolt-component-id = { workspace = true }
+bolt-attribute-bolt-extra-accounts = { workspace = true }
+bolt-attribute-bolt-arguments = { workspace = true }
+
+# Bolt Programs
+world = { workspace = true }
+bolt-system = { workspace = true }
+
+# Session Keys
+session-keys = { workspace = true }
+
+# Delegation
+ephemeral-rollups-sdk = { workspace = true, features = ["anchor"]}
+
+# Other dependencies
+serde.workspace = true
+serde_json.workspace = true
+ahash.workspace = true
+solana-program.workspace = true
+bincode.workspace = true
+zeroize.workspace = true
+
+[dependencies.getrandom]
+version = "^0"
+default-features = false
+features = ["dummy"]
